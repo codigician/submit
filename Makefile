@@ -1,3 +1,7 @@
+up:
+	docker build --progress=plain -t submit-api .
+	docker run submit-api
+
 run:
 	go run .
 
