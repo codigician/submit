@@ -1,0 +1,66 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Build
+      run: go build -v ./...
+  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Test
+      run: go test -v ./...
+ 
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Linter
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.43
+  
+  code-coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Code coverage
+      run: |
+        export COVERAGE_THRESHOLD=80
+        go test -race -coverprofile=coverage.out -covermode=atomic ./...
+        coverage=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')
+        if [ 1 -eq "$(echo "${coverage} < ${COVERAGE_THRESHOLD}" | bc)" ]
+        then
+          echo "Insufficient test coverage, threshold=${COVERAGE_THRESHOLD}, coverage= ${coverage}"
+          exit 1
+        fi
+        
