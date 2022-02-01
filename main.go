@@ -1,5 +1,15 @@
 package main
 
+import (
+	"github.com/labstack/echo/v4"
+)
+
 func main() {
-	panic("not implemented")
+	e := echo.New()
+	h := handler{
+		service:   &Service{},
+		validator: &RequestValidator{},
+	}
+	e.POST("/submit", h.HandleSubmit)
+	e.Logger.Fatal(e.Start(":8000"))
 }
