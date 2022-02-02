@@ -7,8 +7,7 @@ import (
 func main() {
 	e := echo.New()
 	h := handler{
-		service:   &Service{},
-		validator: &RequestValidator{},
+		service: &Service{},
 	}
 	e.POST("/submit", h.HandleSubmit)
 	e.Logger.Fatal(e.Start(":8000"))

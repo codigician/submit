@@ -22,12 +22,8 @@ type SubmitService interface {
 	Submit(ctx context.Context, req SubmitRequest) ([]Result, error)
 }
 
-type SubmitValidator interface {
-	Validate(req SubmitRequest) error
-}
 type handler struct {
-	service   SubmitService
-	validator SubmitValidator
+	service SubmitService
 }
 
 func (h *handler) HandleSubmit(c echo.Context) error {
@@ -35,15 +31,15 @@ func (h *handler) HandleSubmit(c echo.Context) error {
 	if err := c.Bind(&reqBody); err != nil {
 		return c.JSON(http.StatusBadRequest, "bad request")
 	}
-
-	if validationError := h.validator.Validate(reqBody); validationError != nil {
+	var requestValidator = RequestValidator{}
+	if validationError := requestValidator.Validate(reqBody); validationError != nil {
 		return c.JSON(http.StatusBadRequest, validationError.Error())
 	}
 
 	//c.Request().Header.Get("Authorization")
 	res, err := h.service.Submit(c.Request().Context(), reqBody)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusConflict, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, res)

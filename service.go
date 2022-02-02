@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"time"
 )
 
@@ -9,6 +10,9 @@ type Service struct {
 }
 
 func (s *Service) Submit(ctx context.Context, req SubmitRequest) ([]Result, error) {
+	if !supportedLanguage(req.Lang) {
+		return nil, errors.New("Langugae is not supported")
+	}
 
 	//content := req.Content
 	//language := req.Lang
@@ -25,4 +29,8 @@ func (s *Service) Submit(ctx context.Context, req SubmitRequest) ([]Result, erro
 			Status:   "fail",
 		},
 	}, nil
+}
+
+func supportedLanguage(lang string) bool {
+	return supportedLanguages[lang]
 }

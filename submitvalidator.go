@@ -8,13 +8,17 @@ type RequestValidator struct {
 }
 
 func (v *RequestValidator) Validate(req SubmitRequest) error {
-	if !supportedLanguage(req.Lang) {
-		return errors.New("language is not supported")
+	if req.Lang == "" {
+		return errors.New("Parameter cannot be null")
+	}
+
+	if req.QuestionID == "" {
+		return errors.New("Parameter cannot be null")
+	}
+
+	if req.Content == "" {
+		return errors.New("Parameter cannot be null")
 	}
 
 	return nil
-}
-
-func supportedLanguage(lang string) bool {
-	return supportedLanguages[lang]
 }
