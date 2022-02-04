@@ -31,7 +31,7 @@ func (h *handler) HandleSubmit(c echo.Context) error {
 	if err := c.Bind(&reqBody); err != nil {
 		return c.JSON(http.StatusBadRequest, "bad request")
 	}
-	var requestValidator = RequestValidator{}
+	var requestValidator RequestValidator
 	if validationError := requestValidator.Validate(reqBody); validationError != nil {
 		return c.JSON(http.StatusBadRequest, validationError.Error())
 	}

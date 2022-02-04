@@ -11,7 +11,7 @@ type Service struct {
 
 func (s *Service) Submit(ctx context.Context, req SubmitRequest) ([]Result, error) {
 	if !supportedLanguage(req.Lang) {
-		return nil, errors.New("Langugae is not supported")
+		return nil, errors.New("Language is not supported")
 	}
 
 	//content := req.Content
