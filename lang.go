@@ -13,3 +13,7 @@ var (
 		"java8":      true,
 	}
 )
+
+func IsSupported(lang string) bool {
+	return supportedLanguages[lang]
+}
